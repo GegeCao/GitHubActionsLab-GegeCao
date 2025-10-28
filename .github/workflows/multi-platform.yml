@@ -1,0 +1,62 @@
+name: Multi-platform CI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  ubuntu-job:
+    name: Ubuntu job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Print runner and OS info
+        run: |
+          echo "Runner OS: $RUNNER_OS"
+          uname -a
+
+      - name: Create a file and show its contents
+        run: |
+          echo "This is the ubuntu-job running on $(uname -s) $(uname -r)" > info.txt
+          echo "Contents of info.txt:" && cat info.txt
+
+  windows-job:
+    name: Windows job
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Print runner and OS info (PowerShell)
+        shell: pwsh
+        run: |
+          Write-Host "Runner OS: $env:RUNNER_OS"
+          # show basic Windows OS info
+          systeminfo | Select-String "OS Name","OS Version" -SimpleMatch
+
+      - name: Create a file and show its contents (PowerShell)
+        shell: pwsh
+        run: |
+          "This is the windows-job running on $($env:OS)" | Out-File -FilePath info.txt -Encoding utf8
+          Write-Host "Contents of info.txt:"
+          Get-Content info.txt
+
+  macos-job:
+    name: macOS job
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Print runner and OS info
+        run: |
+          echo "Runner OS: $RUNNER_OS"
+          uname -a
+
+      - name: Create a file and show its contents
+        run: |
+          echo "This is the macos-job running on $(uname -s) $(uname -r)" > info.txt
+          echo "Contents of info.txt:" && cat info.txt
